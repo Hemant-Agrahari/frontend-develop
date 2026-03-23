@@ -1,32 +1,22 @@
-"use client"
-import { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const [item, setItem] = useState([]);
-  console.log('item',item)
-
-  const AddItem = () => {
-    console.log("button click")
-    if (input.trim() === "") return;
-
-    setItem((prev) => [...prev, input]);
+  const [items, setItems] = useState([]);
+  const add = () => {
+    if (input === "") return null;
+    setItems((prev) => [...prev, input]);
     setInput("");
   };
-
   return (
-    <div>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button onClick={AddItem}>Add</button>
-
+    <div className="d-flex align-items-center justify-content-center">
+      <input type="text" onChange={(e) => setInput(e.target.value)} value={input}/>
+      <button onClick={add}>Add</button>
       <ul>
-        {item.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
+        {items.map((items, index) => {
+          return <li key={index}>{items}</li>;
+        })}
       </ul>
     </div>
   );
