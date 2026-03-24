@@ -1,37 +1,68 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [items, setItems] = useState([]);
-  const [editId,setEditId]=useState()
+  const [editId, setEditId] = useState(null);
+
   const add = () => {
-    if (input === "") return null;
-    if(editId !== null){
-      //update item
-      setItems((prev)=>prev.map((item)=>item.id === editId ? {...item,text:input} : item))
-      setEditId(null)
-    }else{
-      setItems((prev) => [...prev, {id:Date.now(),text:input}]);
+    if (input.trim() === "") return;
+
+    if (editId !== null) {
+      // Update item
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === editId ? { ...item, text: input } : item
+        )
+      );
+      setEditId(null);
+    } else {
+      // Add new item
+      setItems((prev) => [
+        ...prev,
+        { id: Date.now(), text: input },
+      ]);
     }
-   
+
     setInput("");
   };
 
-  const deleteTodo = ()=>{
+  const deleteTodo = (id) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
-  }
-  const editTodo = ()=>{
+  const editTodo = (id) => {
+    const selectedItem = items.find((item) => item.id === id);
+    setInput(selectedItem.text);
+    setEditId(id);
+  };
 
-  }
   return (
-    <div className="d-flex align-items-center justify-content-center">
-      <input type="text" onChange={(e) => setInput(e.target.value)} value={input}/>
-      <button onClick={add}>{editId !== null ? "Update" : "Add"}Add</button>
+    <div className="d-flex align-items-center justify-content-center flex-column">
+      <input
+        type="text"
+        onChange={(e) => setInput(e.target.value)}
+        value={input}
+      />
+      <button onClick={add}>
+        {editId !== null ? "Update" : "Add"}
+      </button>
+
       <ul>
-        {items.map((items, index) => {
-          return <li key={index}>{items} <div><button onClick={deleteTodo}>delete</button> <button onClick={editTodo}>Edit</button></div></li>;
-        })}
+        {items.map((item) => (
+          <li key={item.id}>
+            {item.text}
+            <div>
+              <button onClick={() => deleteTodo(item.id)}>
+                Delete
+              </button>
+              <button onClick={() => editTodo(item.id)}>
+                Edit
+              </button>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );
